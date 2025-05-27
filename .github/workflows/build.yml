@@ -25,11 +25,12 @@ jobs:
           pip install pyinstaller
 
       - name: Build EXE with PyInstaller
-        run: pyinstaller Usage_History.py --noconfirm --onefile --noconsole --name Usage_History
+        # pyzbarの依存DLL (libiconv.dll) をバンドルするために --collect-all pyzbar を追加
+        # エラーメッセージから、ターゲットスクリプトがUsage_History.py であると判断
+        run: pyinstaller Usage_History.py --noconfirm --onefile --noconsole --name Usage_History --collect-all pyzbar
 
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
           name: Usage_History
           path: dist/Usage_History.exe
-
