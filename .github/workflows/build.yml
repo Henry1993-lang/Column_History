@@ -8,28 +8,33 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions: # ★ここを追加または修正
+      contents: read # リポジトリのコードを読み取るため
+      actions: write # アクションがアーティファクトをアップロードできるようにするため
+      # または artifacts: write を使用することもできます (より新しい、特定のパーミッション)
+      # artifacts: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-    - name: Build with PyInstaller
-      run: pyinstaller --onefile --noconsole Usage_History.py
+      - name: Build with PyInstaller
+        run: pyinstaller --onefile --noconsole Usage_History.py
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: usage_history_exe
-        path: dist/Usage_History.exe
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: usage_history_exe
+          path: dist/Usage_History.exe
 
