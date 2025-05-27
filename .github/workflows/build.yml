@@ -1,22 +1,17 @@
-name: Build Windows EXE
+name: Build EXE with PyInstaller
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]  # mainブランチへのpushで実行
+  workflow_dispatch:     # GitHub上で手動実行も可能
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
-    permissions: # ★ここを追加または修正
-      contents: read # リポジトリのコードを読み取るため
-      actions: write # アクションがアーティファクトをアップロードできるようにするため
-      # または artifacts: write を使用することもできます (より新しい、特定のパーミッション)
-      # artifacts: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -29,12 +24,12 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build with PyInstaller
-        run: pyinstaller --onefile --noconsole Usage_History.py
+      - name: Build EXE with PyInstaller
+        run: pyinstaller Usage_History.py --noconfirm --onefile --noconsole --name Usage_History
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: usage_history_exe
+          name: Usage_History
           path: dist/Usage_History.exe
 
